@@ -22,20 +22,19 @@ def gas():
     return 'mantap'
 
 @app.route('/calculate', methods=["POST"])
-def main(value):
+def main():
     cities = []
     points = []
-    
-    for i in value.readlines():
-        city = value.split(' ')
-        cities.append(dict(index=int(city[0]), x=float(city[1]), y=float(city[2])))
-        points.append((float(city[1]), float(city[2])))
 
-    # with open('./data/bwi.txt') as f:
-    #     for line in f.readlines():
-    #         city = line.split(' ')
-    #         cities.append(dict(index=int(city[0]), x=float(city[1]), y=float(city[2])))
-    #         points.append((float(city[1]), float(city[2])))
+    value = request.form['value']
+    
+    _value = value.splitlines()
+    
+    for i in range(len(_value)):
+      city = _value[i].split(' ')
+      cities.append(dict(index=int(city[0]), x=float(city[1]), y=float(city[2])))
+      points.append((float(city[1]), float(city[2])))
+
     cost_matrix = []
     rank = len(cities)
     for i in range(rank):
@@ -47,9 +46,11 @@ def main(value):
     graph = Graph(cost_matrix, rank)
     print(graph.matrix)
     path, cost = aco.solve(graph)
-    print('cost: {}, path: {}'.format(cost*142, path))
-    results = [path,cost]
+    print('cost: {}, path: {}'.format(cost, path))
+    for i in range (len(path)):
+        path[i]+=1
+    results = [cost*142,path]
     return results
 
 if __name__=="__main__":
-    app.run(debug=True, port = int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0')
