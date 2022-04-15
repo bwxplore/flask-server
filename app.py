@@ -1,5 +1,4 @@
 from flask import Flask
-import os
 from flask import Flask, render_template, request
 from flask_restful import Resource, Api
 from flask_cors import CORS
@@ -28,7 +27,7 @@ def main():
 
     value = request.form['value']
     
-    _value = value.splitlines()
+    _value = value.split("+")
     
     for i in range(len(_value)):
       city = _value[i].split(' ')
@@ -49,7 +48,8 @@ def main():
     print('cost: {}, path: {}'.format(cost, path))
     for i in range (len(path)):
         path[i]+=1
-    results = [cost*142,path]
+    cost*=142
+    results = {"cost": cost, "path" : path}
     return results
 
 if __name__=="__main__":

@@ -12,11 +12,11 @@ class Graph(object):
         self.pheromone = [[1 / (rank * rank) for j in range(rank)] for i in range(rank)]
 
 class ACO(object):
-    def __init__(self, ant_count: int, generations: int, alpha: float, beta: float, rho: float, q: int,
+    def __init__(self, ant_count: int, cycle: int, alpha: float, beta: float, rho: float, q: int,
                  strategy: int):
         """
         :param ant_count:
-        :param generations:
+        :param cycle:
         :param alpha: relative importance of pheromone
         :param beta: relative importance of heuristic information
         :param rho: pheromone residual coefficient
@@ -28,7 +28,7 @@ class ACO(object):
         self.beta = beta
         self.alpha = alpha
         self.ant_count = ant_count
-        self.generations = generations
+        self.cycle = cycle
         self.update_strategy = strategy
 
     def _update_pheromone(self, graph: Graph, ants: list):
@@ -45,7 +45,7 @@ class ACO(object):
         """
         best_cost = float('inf')
         best_solution = []
-        for gen in range(self.generations):
+        for gen in range(self.cycle):
             # noinspection PyUnusedLocal
             ants = [_Ant(self, graph) for i in range(self.ant_count)]
             for ant in ants:
@@ -58,7 +58,6 @@ class ACO(object):
                 # update pheromone
                 ant._update_pheromone_delta()
             self._update_pheromone(graph, ants)
-            # print('generation #{}, best cost: {}, path: {}'.format(gen, best_cost, best_solution))
         return best_solution, best_cost
 
 class _Ant(object):
