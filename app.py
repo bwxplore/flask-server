@@ -1,6 +1,6 @@
 from flask import Flask
-from flask import Flask, render_template, request
-from flask_restful import Resource, Api
+from flask import Flask, request
+from flask_restful import  Api
 from flask_cors import CORS
 import math
 from aco import *
@@ -31,8 +31,8 @@ def main():
     
     for i in range(len(_value)):
       city = _value[i].split(' ')
-      cities.append(dict(index=int(city[0]), x=float(city[1]), y=float(city[2])))
-      points.append((float(city[1]), float(city[2])))
+      cities.append(dict(index=i, x=float(city[0]), y=float(city[1])))
+      points.append((float(city[0]), float(city[1])))
 
     cost_matrix = []
     rank = len(cities)
@@ -41,14 +41,12 @@ def main():
         for j in range(rank):
             row.append(distance(cities[i], cities[j]))
         cost_matrix.append(row)
-    aco = ACO(10, 100, 1.0, 10.0, 0.5, 10, 2)
+    aco = ACO(10, 50, 1.0, 10.0, 0.5, 10, 2)
     graph = Graph(cost_matrix, rank)
     print(graph.matrix)
     path, cost = aco.solve(graph)
     print('cost: {}, path: {}'.format(cost, path))
-    for i in range (len(path)):
-        path[i]+=1
-    cost*=142
+    cost*= 60 * 1.1515 * 1.609344
     results = {"cost": cost, "path" : path}
     return results
 
